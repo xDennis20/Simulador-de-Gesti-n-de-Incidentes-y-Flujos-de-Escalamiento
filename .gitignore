@@ -1,0 +1,12 @@
+# IDE's
+.vscode
+.idea
+# Entorno virtual de Python
+venv/
+
+# Archivos innecesarios del sistema
+__pycache__/
+
+# Archivos de instalación y configuraciones locales
+*.env
+*.DS_Store
