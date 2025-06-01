@@ -1,7 +1,5 @@
 from cli.interface import MenuPrincipal
-
-class OpcionInvalidaError(Exception):
-    pass
+from core.Excepciones import OpcionInvalidaError
 
 class MenuControlado:
     def __init__(self,menu: MenuPrincipal):
@@ -18,6 +16,7 @@ class MenuControlado:
                     break
             except OpcionInvalidaError:
                 print("❌ Opción no válida. Intenta de nuevo.")
+
     @staticmethod
     def procesar_opcion(opcion: int):
         if opcion == 1:

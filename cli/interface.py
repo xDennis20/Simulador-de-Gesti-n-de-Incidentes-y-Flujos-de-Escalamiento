@@ -13,3 +13,9 @@ class MenuPrincipal(MenuBase):
         print("4. ✅ Resolver incidente")
         print("5. 📓 Ver historial de incidentes")
         print("6. 📤 Guardar y salir")
+
+class InterfazIncidenteServicio(ABC):
+    @staticmethod
+    @abstractmethod
+    def registrar_incidente(self):
+        pass
