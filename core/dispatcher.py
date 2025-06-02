@@ -22,7 +22,7 @@ class ServicioIncidente(InterfazIncidenteServicio):
 
         ide = self._id
         tipo = solicitar_dato("Ingrese el tipo de prioridad: ",validar_tipo_incidente)
-        prioridad = solicitar_dato("Ingrese la prioridad del incidente ('Alto,Medio,Bajo'): ",validar_prioridad)
+        prioridad = solicitar_dato("Ingrese la prioridad del incidente: ",validar_prioridad)
         descripcion = input("Descripcion del incidente: ")
         fecha_creacion = datetime.now()
         asignar_operador = None
@@ -36,7 +36,10 @@ class GestorDeIncidentes:
 
     def registarar_incidente(self):
         nuevo_incidente = self.servicio_incidente.registrar_incidente()
-        self.cola_incidentes.append(nuevo_incidente)
+        if nuevo_incidente.prioridad == "alta": #En esta condicional es para poner primero los incidentes con prioridad alta en la cola
+            self.cola_incidentes.appendleft(nuevo_incidente)
+        else:
+            self.cola_incidentes.append(nuevo_incidente)
         print("Incidente Registrado Correctamente")
 
 servicio_incidente = ServicioIncidente()
