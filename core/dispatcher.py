@@ -1,18 +1,44 @@
 from incident.models import Incidentes
 from cli.interface import InterfazIncidenteServicio
 from datetime import datetime
+from Excepciones import ValorInvalidoError
+from validator import validar_tipo_incidente,validar_estado_incidente,validar_prioridad
+from collections import deque
 
 class ServicioIncidente(InterfazIncidenteServicio):
     contador_id = 0
     def __init__(self):
         ServicioIncidente.contador_id +=1
-        self.id = ServicioIncidente.contador_id
+        self._id = ServicioIncidente.contador_id
+
     def registrar_incidente(self):
-        ide = self.id
-        tipo = input("Ingrese el tipo de incidente: ").lower().strip()
-        prioridad = input("Ingrese la prioridad del incidente ('Alto,Medio,Bajo'): ").lower().strip()
+        def solicitar_dato(mensaje: str, funcion_validador):
+            while True:
+                entrada = input(mensaje).lower().strip()
+                try:
+                    return funcion_validador(entrada)
+                except ValorInvalidoError:
+                    print("Dato inválido. Intenta de nuevo.")
+
+        ide = self._id
+        tipo = solicitar_dato("Ingrese el tipo de prioridad: ",validar_tipo_incidente)
+        prioridad = solicitar_dato("Ingrese la prioridad del incidente ('Alto,Medio,Bajo'): ",validar_prioridad)
         descripcion = input("Descripcion del incidente: ")
         fecha_creacion = datetime.now()
         asignar_operador = None
-        estado = input("Ingrese el estado del incidente: ").lower()
+        estado = solicitar_dato("Ingrese el estado del incidente: ",validar_estado_incidente)
         return Incidentes(ide,tipo,prioridad,descripcion,fecha_creacion,asignar_operador,estado)
+
+class GestorDeIncidentes:
+    def __init__(self,servicio_incidente: InterfazIncidenteServicio):
+        self.servicio_incidente = servicio_incidente
+        self.cola_incidentes = deque([])
+
+    def registarar_incidente(self):
+        nuevo_incidente = self.servicio_incidente.registrar_incidente()
+        self.cola_incidentes.append(nuevo_incidente)
+        print("Incidente Registrado Correctamente")
+
+servicio_incidente = ServicioIncidente()
+gestor = GestorDeIncidentes(servicio_incidente)
+gestor.registarar_incidente()

@@ -10,4 +10,4 @@ class Incidentes:
     descripcion: str
     fecha_creacion: datetime
     asignado: Optional[str]
-    estado: str  # "pendiente", "en_progreso", "resuelto", "escalable"
+    estado: str  # "pendiente", "Activo", "resuelto", "escalable"
