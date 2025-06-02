@@ -1,3 +1,4 @@
+from util.mostrar import mostrar_incidente
 
 def filtrar_prioridad(lista_incidentes):
     salir = False
@@ -15,15 +16,15 @@ def filtrar_prioridad(lista_incidentes):
         if opcion == 1:
             for incidente in lista_incidentes:
                 if incidente.prioridad == "alta":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 2:
             for incidente in lista_incidentes:
                 if incidente.prioridad == "media":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 3:
             for incidente in lista_incidentes:
                 if incidente.prioridad == "baja":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 4:
             salir = True
         else:
@@ -46,20 +47,31 @@ def filtrar_estados(lista_incidentes):
         if opcion == 1:
             for incidente in lista_incidentes:
                 if incidente.estado == "pendiente":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 2:
             for incidente in lista_incidentes:
                 if incidente.estado == "activo":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 3:
             for incidente in lista_incidentes:
                 if incidente.estado == "resuelto":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 4:
             for incidente in lista_incidentes:
                 if incidente.estado == "escalable":
-                    print(incidente)
+                    mostrar_incidente(incidente)
         elif opcion == 5:
             salir = True
         else:
             print("Opcion no valida")
+
+def filtrar_estado_pendiente_activo(lista_incidente):
+    lista_filtrada = []
+    for incidente in lista_incidente:
+        if incidente.estado == "pendiente" or incidente.estado == "activo":
+            lista_filtrada.append(incidente)
+    if lista_filtrada:
+        for incidente in lista_filtrada:
+            mostrar_incidente(incidente)
+    else:
+        print("No hay incidentes a resolver")

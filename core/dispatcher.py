@@ -4,6 +4,7 @@ from datetime import datetime
 from Excepciones import ValorInvalidoError
 from validator import validar_tipo_incidente,validar_estado_incidente,validar_prioridad
 from collections import deque
+from rules.defualt_rules import regla_prioridad_alta
 
 class ServicioIncidente(InterfazIncidenteServicio):
     contador_id = 0
@@ -34,14 +35,17 @@ class GestorDeIncidentes:
         self.servicio_incidente = servicio_incidente
         self.cola_incidentes = deque([])
 
-    def registarar_incidente(self):
+    def registrar_incidente(self):
         nuevo_incidente = self.servicio_incidente.registrar_incidente()
-        if nuevo_incidente.prioridad == "alta": #En esta condicional es para poner primero los incidentes con prioridad alta en la cola
+        if regla_prioridad_alta(nuevo_incidente): #En esta condicional es para poner primero los incidentes con prioridad alta en la cola
             self.cola_incidentes.appendleft(nuevo_incidente)
         else:
             self.cola_incidentes.append(nuevo_incidente)
         print("Incidente Registrado Correctamente")
 
+    def resolver_incidente(self):
+        pass
+
 servicio_incidente = ServicioIncidente()
 gestor = GestorDeIncidentes(servicio_incidente)
-gestor.registarar_incidente()
+gestor.registrar_incidente()
