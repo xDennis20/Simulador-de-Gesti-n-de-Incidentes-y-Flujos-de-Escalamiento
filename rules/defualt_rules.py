@@ -13,4 +13,13 @@ def roles_permitidos():
     "seguridad": {"admin"},
     "solicitud": {"tecnico", "soporte"}
     }
+    return roles
 
+def set_operadores_disponibles():
+    operadores = {
+        "tecnico",
+        "admin",
+        "analista",
+        "soporte"
+    }
+    return operadores

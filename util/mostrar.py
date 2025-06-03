@@ -1,4 +1,3 @@
-
 def mostrar_incidente(incidente):
     print(f"""
 🔹 ID: {incidente.id}

@@ -2,9 +2,11 @@ from incident.models import Incidentes
 from cli.interface import InterfazIncidenteServicio
 from datetime import datetime
 from Excepciones import ValorInvalidoError
+from util.mostrar import mostrar_incidente
 from validator import validar_tipo_incidente,validar_estado_incidente,validar_prioridad
 from collections import deque
-from rules.defualt_rules import regla_prioridad_alta
+from rules.defualt_rules import regla_prioridad_alta,roles_permitidos,set_operadores_disponibles
+from incident.filters import filtrar_estado_pendiente_activo
 
 class ServicioIncidente(InterfazIncidenteServicio):
     contador_id = 0
@@ -22,7 +24,7 @@ class ServicioIncidente(InterfazIncidenteServicio):
                     print("Dato inválido. Intenta de nuevo.")
 
         ide = self._id
-        tipo = solicitar_dato("Ingrese el tipo de prioridad: ",validar_tipo_incidente)
+        tipo = solicitar_dato("Ingrese el tipo de incidente: ",validar_tipo_incidente)
         prioridad = solicitar_dato("Ingrese la prioridad del incidente: ",validar_prioridad)
         descripcion = input("Descripcion del incidente: ")
         fecha_creacion = datetime.now()
@@ -44,7 +46,33 @@ class GestorDeIncidentes:
         print("Incidente Registrado Correctamente")
 
     def resolver_incidente(self):
-        pass
+        lista_filtrada = filtrar_estado_pendiente_activo(self.cola_incidentes)
+        contador = 0
+        salir = False
+        for incidente in lista_filtrada:
+            contador+=1
+            print(f"""\n{contador}. Incidente
+            {mostrar_incidente(incidente)}""")
+        while not salir:
+            try:
+                opcion = int(input("Elija un incidente a resolver: "))
+            except ValueError:
+                print("Coloque un valor entero por favor")
+                continue
+            if 1 <= opcion <= len(lista_filtrada):
+                incidente_obtenido = lista_filtrada[opcion - 1]
+                roles = roles_permitidos()
+                operador = input("Que operador desea usar?: ").lower().strip()
+                if operador in set_operadores_disponibles():
+                    if operador in roles.get(incidente_obtenido.tipo, []):
+                        incidente_obtenido.estado = "resuelto"
+                        incidente_obtenido.asignado = operador
+                        salir = True
+                else:
+                    print("Operador no disponible")
+            else:
+                print("Opción fuera de rango. Regresando al menú.")
+                salir = True
 
 servicio_incidente = ServicioIncidente()
 gestor = GestorDeIncidentes(servicio_incidente)

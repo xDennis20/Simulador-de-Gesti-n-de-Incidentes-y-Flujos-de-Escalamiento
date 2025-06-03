@@ -71,7 +71,7 @@ def filtrar_estado_pendiente_activo(lista_incidente):
         if incidente.estado == "pendiente" or incidente.estado == "activo":
             lista_filtrada.append(incidente)
     if lista_filtrada:
-        for incidente in lista_filtrada:
-            mostrar_incidente(incidente)
+        return lista_filtrada
     else:
         print("No hay incidentes a resolver")
+        return None
