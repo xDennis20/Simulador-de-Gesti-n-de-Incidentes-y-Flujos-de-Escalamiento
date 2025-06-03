@@ -1,8 +1,9 @@
 import json
+from collections import deque
 from datetime import datetime
 from incident.models import Incidentes
 
-def guardar_incidente(lista_incidentes: list, nombre_archivo="persistence/incidentes.json"):
+def guardar_incidente(lista_incidentes: deque, nombre_archivo="persistence/incidentes.json"):
     datos = []
     for incidente in lista_incidentes:
         datos.append({

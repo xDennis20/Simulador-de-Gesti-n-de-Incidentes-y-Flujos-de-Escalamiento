@@ -2,7 +2,7 @@ from datetime import datetime,timedelta
 
 def regla_escalar(incidente,minutos = 30):
     tiempo_minutos = datetime.now() - incidente.fecha_creacion
-    return incidente.estado == "pendiente" and tiempo_minutos >= timedelta(minutos)
+    return incidente.estado in ["pendiente","escalable"] and tiempo_minutos >= timedelta(minutos)
 
 def regla_prioridad_alta(incidente):
     return incidente.prioridad == "alta"

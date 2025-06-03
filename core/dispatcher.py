@@ -7,6 +7,8 @@ from validator import validar_tipo_incidente,validar_estado_incidente,validar_pr
 from collections import deque
 from rules.defualt_rules import regla_prioridad_alta,roles_permitidos,set_operadores_disponibles
 from incident.filters import filtrar_estado_pendiente_activo
+from persistence.storage import guardar_incidente
+from escalator import escalar_incidentes
 
 class ServicioIncidente(InterfazIncidenteServicio):
     contador_id = 0
@@ -46,6 +48,7 @@ class GestorDeIncidentes:
         print("Incidente Registrado Correctamente")
 
     def resolver_incidente(self):
+        escalar_incidentes(self.cola_incidentes)
         lista_filtrada = filtrar_estado_pendiente_activo(self.cola_incidentes)
         contador = 0
         salir = False
@@ -67,6 +70,7 @@ class GestorDeIncidentes:
                     if operador in roles.get(incidente_obtenido.tipo, []):
                         incidente_obtenido.estado = "resuelto"
                         incidente_obtenido.asignado = operador
+                        guardar_incidente(self.cola_incidentes)
                         salir = True
                 else:
                     print("Operador no disponible")
