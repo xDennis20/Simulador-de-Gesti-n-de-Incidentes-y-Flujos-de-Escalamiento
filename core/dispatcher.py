@@ -7,7 +7,7 @@ from validator import validar_tipo_incidente,validar_estado_incidente,validar_pr
 from collections import deque
 from rules.defualt_rules import regla_prioridad_alta,roles_permitidos,set_operadores_disponibles
 from incident.filters import filtrar_estado_pendiente_activo
-from persistence.storage import guardar_incidente
+from persistence.storage import guardar_incidente_json,guardar_historial_json
 from escalator import escalar_incidentes
 
 class ServicioIncidente(InterfazIncidenteServicio):
@@ -38,6 +38,7 @@ class GestorDeIncidentes:
     def __init__(self,servicio_incidente: InterfazIncidenteServicio):
         self.servicio_incidente = servicio_incidente
         self.cola_incidentes = deque([])
+        self.historial = []
 
     def registrar_incidente(self):
         nuevo_incidente = self.servicio_incidente.registrar_incidente()
@@ -70,14 +71,12 @@ class GestorDeIncidentes:
                     if operador in roles.get(incidente_obtenido.tipo, []):
                         incidente_obtenido.estado = "resuelto"
                         incidente_obtenido.asignado = operador
-                        guardar_incidente(self.cola_incidentes)
+                        self.historial.append(incidente_obtenido)
+                        guardar_historial_json(self.historial)
+                        guardar_incidente_json(self.cola_incidentes)
                         salir = True
                 else:
                     print("Operador no disponible")
             else:
                 print("Opción fuera de rango. Regresando al menú.")
                 salir = True
-
-servicio_incidente = ServicioIncidente()
-gestor = GestorDeIncidentes(servicio_incidente)
-gestor.registrar_incidente()
