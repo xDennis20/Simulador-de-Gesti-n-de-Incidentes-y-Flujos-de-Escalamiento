@@ -32,8 +32,7 @@ class MenuControlado:
         if opcion == 1:
             self.gestor.registrar_incidente()
         elif opcion == 2:
-            print("Aun no impletado la opcion 2")
-            return False
+            self.gestor.mostrar_incidentes()
         elif opcion == 3:
             self.gestor.asignar_incidente_a_operador()
         elif opcion == 4:

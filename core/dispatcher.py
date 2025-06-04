@@ -48,6 +48,16 @@ class GestorDeIncidentes:
             self.cola_incidentes.append(nuevo_incidente)
         print("Incidente Registrado Correctamente")
 
+    def mostrar_incidentes(self):
+        lista_mostrar = filtrar_estado_pendiente_activo(self.cola_incidentes)
+        if not lista_mostrar:
+            print("📭 No hay incidentes pendientes ni activos.")
+            return
+
+        print("📋 Lista de incidentes pendientes/en progreso:")
+        for incidente in lista_mostrar:
+            print(mostrar_incidente(incidente))
+
     def resolver_incidente(self):
         escalar_incidentes(self.cola_incidentes)
         lista_filtrada = filtrar_estado_pendiente_activo(self.cola_incidentes)
