@@ -35,8 +35,7 @@ class MenuControlado:
             print("Aun no impletado la opcion 2")
             return False
         elif opcion == 3:
-            print("Aun no impletado la opcion 3")
-            return False
+            self.gestor.asignar_incidente_a_operador()
         elif opcion == 4:
             self.gestor.resolver_incidente()
         elif opcion == 5:
@@ -44,6 +43,8 @@ class MenuControlado:
                 print(f"\n{i}.")
                 print(mostrar_incidente(incidente))
         elif opcion == 6:
+            self.gestor.buscar_incidentes()
+        elif opcion == 7:
             guardar_incidente_json(self.gestor.cola_incidentes)
             guardar_historial_json(self.gestor.historial)
             return True

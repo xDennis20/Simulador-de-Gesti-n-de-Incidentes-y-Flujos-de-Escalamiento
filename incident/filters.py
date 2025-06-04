@@ -1,4 +1,6 @@
 from util.mostrar import mostrar_incidente
+import re
+from datetime import datetime
 
 def filtrar_prioridad(lista_incidentes):
     salir = False
@@ -75,3 +77,37 @@ def filtrar_estado_pendiente_activo(lista_incidente):
     else:
         print("No hay incidentes a resolver")
         return None
+
+def buscar_texto(lista_incidentes,texto_a_buscar: str):
+    patron = re.compile(rf".*{re.escape(texto_a_buscar)}.*",re.IGNORECASE)
+    resultados = [incidente for incidente in lista_incidentes if patron.search(incidente.descripcion)]
+    return resultados
+
+def buscar_por_tipo(lista_incidentes, tipo_busqueda):
+    patron = re.compile(rf".*{re.escape(tipo_busqueda)}.*", re.IGNORECASE)
+    resultados = [incidente for incidente in lista_incidentes if patron.search(incidente.tipo)]
+    return resultados
+
+def buscar_por_rango_fechas(lista_incidentes, fecha_inicio_str, fecha_fin_str):
+    try:
+        formato = "%Y-%m-%d"
+        fecha_inicio = datetime.strptime(fecha_inicio_str, formato)
+        fecha_fin = datetime.strptime(fecha_fin_str, formato)
+    except ValueError:
+        print("❌ Formato inválido. Usa el formato YYYY-MM-DD.")
+        return []
+
+    resultados = [
+        incidente for incidente in lista_incidentes
+        if fecha_inicio <= incidente.creado_en <= fecha_fin
+    ]
+    return resultados
+
+def buscar_por_operador(lista_incidentes, texto_operador):
+    patron = re.compile(re.escape(texto_operador), re.IGNORECASE)
+
+    resultados = [
+        incidente for incidente in lista_incidentes
+        if incidente.asignado and patron.search(incidente.asignado)
+    ]
+    return resultados

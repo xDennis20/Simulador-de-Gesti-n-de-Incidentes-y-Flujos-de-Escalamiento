@@ -12,7 +12,8 @@ class MenuPrincipal(MenuBase):
         print("3. 👨‍🚒 Asignar incidente a un operador")
         print("4. ✅ Resolver incidente")
         print("5. 📓 Ver historial de incidentes")
-        print("6. 📤 Guardar y salir")
+        print("6. 🔍 Buscar incidentes")
+        print("7. 📤 Guardar y salir")
 
 class InterfazIncidenteServicio(ABC):
     @staticmethod
