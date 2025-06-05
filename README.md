@@ -1,18 +1,18 @@
-Sistema de Gestión de Incidencias
-Este proyecto es parte del bootcamp de backend con Python. Simula un sistema sencillo para registrar, actualizar y gestionar incidencias dentro de una empresa u organización.
+# 🛠️ Simulador de Gestión de Incidentes y Flujos de Escalamiento
 
-🧩 Funcionalidades
-Crear incidencias con título, descripción, prioridad y estado.
+Este proyecto simula el funcionamiento de un centro de gestión de incidentes, permitiendo registrar, asignar, resolver y buscar incidentes según reglas de negocio predefinidas. Está desarrollado en Python siguiendo principios de Programación Orientada a Objetos (POO).
 
-Asignar usuarios responsables.
+## 📌 Funcionalidades principales
 
-Cambiar el estado de una incidencia (ej. Abierta → En progreso → Resuelta).
+- Registro de incidentes con validaciones de tipo, prioridad y estado.
+- Gestión de una cola de incidentes priorizada.
+- Asignación de incidentes a operadores según roles permitidos.
+- Resolución de incidentes y almacenamiento en historial.
+- Búsqueda de incidentes por texto, tipo, operador o fecha.
+- Persistencia de datos en archivos JSON para historial y cola de incidentes.
 
-Ver listado de incidencias activas.
+## 🧪 Tecnologías utilizadas
 
-🧠 Principios aplicados
-Programación Orientada a Objetos (POO): uso de clases, encapsulamiento y relaciones entre objetos.
-
-Principios SOLID (SRP y OCP).
-
-Validaciones básicas y manejo de errores.
+- Python 3.12.3
+- Programación Orientada a Objetos (POO)
+- Archivos `.json` para almacenamiento
