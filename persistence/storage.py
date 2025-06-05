@@ -5,60 +5,75 @@ from incident.models import Incidentes
 from typing import List
 
 
-class IncidentStorage:
+def guardar_incidente_json(cola_incidentes: deque, archivo="incidentes.json"):
+    datos = []
+    for inc in cola_incidentes:
+        datos.append({
+            "id": inc.id,
+            "tipo": inc.tipo,
+            "prioridad": inc.prioridad,
+            "descripcion": inc.descripcion,
+            "fecha_creacion": inc.fecha_creacion.isoformat(),
+            "asignado": inc.asignado,
+            "estado": inc.estado
+        })
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4)
 
-    @staticmethod
-    def _incidente_to_dict(incidente: Incidentes) -> dict:
-        """Convierte incidente a diccionario para JSON"""
-        return {
-            "id": incidente.id,
-            "tipo": incidente.tipo,
-            "prioridad": incidente.prioridad,
-            "descripcion": incidente.descripcion,
-            "fecha_creacion": incidente.fecha_creacion.isoformat(),
-            "asignado": incidente.asignado,
-            "estado": incidente.estado
-        }
 
-    @staticmethod
-    def _dict_to_incidente(data: dict) -> Incidentes:
-        """Convierte diccionario a incidente"""
-        return Incidentes(
-            id=data["id"],
-            tipo=data["tipo"],
-            prioridad=data["prioridad"],
-            descripcion=data["descripcion"],
-            fecha_creacion=datetime.fromisoformat(data["fecha_creacion"]),
-            asignado=data["asignado"],
-            estado=data["estado"]
-        )
+def cargar_incidente_json(archivo="incidentes.json") -> deque:
+    try:
+        with open(archivo, "r", encoding="utf-8") as f:
+            datos = json.load(f)
+            incidentes = deque()
+            for item in datos:
+                inc = Incidentes(
+                    id=item["id"],
+                    tipo=item["tipo"],
+                    prioridad=item["prioridad"],
+                    descripcion=item["descripcion"],
+                    fecha_creacion=datetime.fromisoformat(item["fecha_creacion"]),
+                    asignado=item["asignado"],
+                    estado=item["estado"]
+                )
+                incidentes.append(inc)
+            return incidentes
+    except FileNotFoundError:
+        return deque()
 
-    def guardar_incidentes(self, incidentes: deque, archivo="incidentes.json"):
-        """Guarda incidentes en JSON"""
-        datos = [self._incidente_to_dict(inc) for inc in incidentes]
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump(datos, f, indent=4)
 
-    def cargar_incidentes(self, archivo="incidentes.json") -> List[Incidentes]:
-        """Carga incidentes desde JSON"""
-        try:
-            with open(archivo, "r", encoding="utf-8") as f:
-                datos = json.load(f)
-                return [self._dict_to_incidente(item) for item in datos]
-        except FileNotFoundError:
-            return []
+def guardar_historial_json(historial: List[Incidentes], archivo="historial.json"):
+    datos = []
+    for inc in historial:
+        datos.append({
+            "id": inc.id,
+            "tipo": inc.tipo,
+            "prioridad": inc.prioridad,
+            "descripcion": inc.descripcion,
+            "fecha_creacion": inc.fecha_creacion.isoformat(),
+            "asignado": inc.asignado,
+            "estado": inc.estado
+        })
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4)
 
-    def guardar_historial(self, historial: List[Incidentes], archivo="historial.json"):
-        """Guarda historial en JSON"""
-        datos = [self._incidente_to_dict(inc) for inc in historial]
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump(datos, f, indent=4)
 
-    def cargar_historial(self, archivo="historial.json") -> List[Incidentes]:
-        """Carga historial desde JSON"""
-        try:
-            with open(archivo, "r", encoding="utf-8") as f:
-                datos = json.load(f)
-                return [self._dict_to_incidente(item) for item in datos]
-        except FileNotFoundError:
-            return []
+def cargar_historial_json(archivo="historial.json") -> List[Incidentes]:
+    try:
+        with open(archivo, "r", encoding="utf-8") as f:
+            datos = json.load(f)
+            historial = []
+            for item in datos:
+                inc = Incidentes(
+                    id=item["id"],
+                    tipo=item["tipo"],
+                    prioridad=item["prioridad"],
+                    descripcion=item["descripcion"],
+                    fecha_creacion=datetime.fromisoformat(item["fecha_creacion"]),
+                    asignado=item["asignado"],
+                    estado=item["estado"]
+                )
+                historial.append(inc)
+            return historial
+    except FileNotFoundError:
+        return []

@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "tipo": "seguridad",
+        "prioridad": "alta",
+        "descripcion": "se cayo el sistema",
+        "fecha_creacion": "2025-06-05T08:25:24.182891",
+        "asignado": "admin",
+        "estado": "resuelto"
+    },
+    {
+        "id": 2,
+        "tipo": "infraestructura",
+        "prioridad": "media",
+        "descripcion": "Da\u00f1os fisicos de un edificio",
+        "fecha_creacion": "2025-06-05T08:40:45.371699",
+        "asignado": "tecnico",
+        "estado": "resuelto"
+    },
+    {
+        "id": 3,
+        "tipo": "seguridad",
+        "prioridad": "alta",
+        "descripcion": "Vulnerabilidad en el sistema",
+        "fecha_creacion": "2025-06-05T09:40:40.890545",
+        "asignado": "admin",
+        "estado": "resuelto"
+    }
+]

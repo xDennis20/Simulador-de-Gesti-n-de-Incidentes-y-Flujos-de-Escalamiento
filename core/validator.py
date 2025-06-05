@@ -1,4 +1,4 @@
-from Excepciones import ValorInvalidoError
+from core.Excepciones import ValorInvalidoError
 
 def validar_tipo_incidente(tipo: str):
     tipos_validos = ["infraestructura","seguridad","solicitud"]

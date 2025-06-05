@@ -5,7 +5,7 @@ def mostrar_incidente(incidente):
 ⚠️ Prioridad: {incidente.prioridad.capitalize()}
 📝 Descripción: {incidente.descripcion}
 📅 Fecha de creación: {incidente.fecha_creacion.strftime('%Y-%m-%d %H:%M:%S')}
-👷 Operador asignado: {incidente.operador_asignado or 'No asignado'}
+👷 Operador asignado: {incidente.asignado or None}
 📌 Estado: {incidente.estado.capitalize()}
 {"─" * 40}
 """)

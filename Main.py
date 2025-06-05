@@ -1,7 +1,7 @@
 from cli.interface import MenuPrincipal
 from core.Excepciones import OpcionInvalidaError
-from core.dispatcher import GestorDeIncidentes,ServicioIncidente
-from persistence.storage import cargar_incidentes_json, cargar_historial_json,guardar_incidente_json,guardar_historial_json
+from core.dispatcher import ServicioIncidente, GestorDeIncidentes
+from persistence.storage import cargar_incidente_json, cargar_historial_json,guardar_incidente_json,guardar_historial_json
 from collections import deque
 from util.mostrar import mostrar_incidente
 
@@ -9,7 +9,7 @@ from util.mostrar import mostrar_incidente
 class MenuControlado:
     def __init__(self,menu: MenuPrincipal):
         self.menu = menu
-        cola_cargada = cargar_incidentes_json()
+        cola_cargada = cargar_incidente_json()
         historial_cargado = cargar_historial_json()
         servicio = ServicioIncidente()
         self.gestor = GestorDeIncidentes(servicio)
@@ -31,18 +31,23 @@ class MenuControlado:
     def procesar_opcion(self,opcion: int):
         if opcion == 1:
             self.gestor.registrar_incidente()
+            return False
         elif opcion == 2:
             self.gestor.mostrar_incidentes()
+            return False
         elif opcion == 3:
             self.gestor.asignar_incidente_a_operador()
+            return False
         elif opcion == 4:
             self.gestor.resolver_incidente()
+            return False
         elif opcion == 5:
             for i,incidente in enumerate(self.gestor.historial,start=1):
                 print(f"\n{i}.")
                 print(mostrar_incidente(incidente))
         elif opcion == 6:
             self.gestor.buscar_incidentes()
+            return False
         elif opcion == 7:
             guardar_incidente_json(self.gestor.cola_incidentes)
             guardar_historial_json(self.gestor.historial)

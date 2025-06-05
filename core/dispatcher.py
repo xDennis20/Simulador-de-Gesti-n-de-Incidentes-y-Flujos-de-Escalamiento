@@ -1,22 +1,22 @@
 from incident.models import Incidentes
 from cli.interface import InterfazIncidenteServicio
 from datetime import datetime
-from Excepciones import ValorInvalidoError
+from core.Excepciones import ValorInvalidoError
 from util.mostrar import mostrar_incidente
-from validator import validar_tipo_incidente,validar_estado_incidente,validar_prioridad
+from core.validator import (validar_tipo_incidente,validar_estado_incidente,validar_prioridad)
 from collections import deque
 from rules.defualt_rules import regla_prioridad_alta,roles_permitidos,set_operadores_disponibles
 from incident.filters import filtrar_estado_pendiente_activo,buscar_texto,buscar_por_tipo,buscar_por_operador,buscar_por_rango_fechas
 from persistence.storage import guardar_incidente_json,guardar_historial_json
-from escalator import escalar_incidentes
+from core.escalator import escalar_incidentes
 
 class ServicioIncidente(InterfazIncidenteServicio):
     contador_id = 0
-    def __init__(self):
-        ServicioIncidente.contador_id +=1
-        self._id = ServicioIncidente.contador_id
 
     def registrar_incidente(self):
+        ServicioIncidente.contador_id += 1
+        ide = ServicioIncidente.contador_id
+
         def solicitar_dato(mensaje: str, funcion_validador):
             while True:
                 entrada = input(mensaje).lower().strip()
@@ -25,7 +25,6 @@ class ServicioIncidente(InterfazIncidenteServicio):
                 except ValorInvalidoError:
                     print("Dato inválido. Intenta de nuevo.")
 
-        ide = self._id
         tipo = solicitar_dato("Ingrese el tipo de incidente: ",validar_tipo_incidente)
         prioridad = solicitar_dato("Ingrese la prioridad del incidente: ",validar_prioridad)
         descripcion = input("Descripcion del incidente: ")
@@ -61,37 +60,51 @@ class GestorDeIncidentes:
     def resolver_incidente(self):
         escalar_incidentes(self.cola_incidentes)
         lista_filtrada = filtrar_estado_pendiente_activo(self.cola_incidentes)
+
+        if not lista_filtrada:
+            print("No hay incidentes para resolver")
+            return
+
         contador = 0
-        salir = False
         for incidente in lista_filtrada:
-            contador+=1
-            print(f"""\n{contador}. Incidente
-            {mostrar_incidente(incidente)}""")
-        while not salir:
-            try:
-                opcion = int(input("Elija un incidente a resolver: "))
-            except ValueError:
-                print("Coloque un valor entero por favor")
-                continue
+            contador += 1
+            print(f"\n{contador}. Incidente")
+            print(mostrar_incidente(incidente))
+
+        try:
+            opcion = int(input("Elija un incidente a resolver: "))
             if 1 <= opcion <= len(lista_filtrada):
                 incidente_obtenido = lista_filtrada[opcion - 1]
-                roles = roles_permitidos()
                 operador = input("Que operador desea usar?: ").lower().strip()
+
                 if operador in set_operadores_disponibles():
+                    roles = roles_permitidos()
                     if operador in roles.get(incidente_obtenido.tipo, []):
-                        incidente_obtenido.estado = "resuelto"
-                        incidente_obtenido.asignado = operador
-                        self.historial.append(incidente_obtenido)
+                        # Crear nuevo incidente resuelto
+                        incidente_resuelto = Incidentes(
+                            id=incidente_obtenido.id,
+                            tipo=incidente_obtenido.tipo,
+                            prioridad=incidente_obtenido.prioridad,
+                            descripcion=incidente_obtenido.descripcion,
+                            fecha_creacion=incidente_obtenido.fecha_creacion,
+                            asignado=operador,
+                            estado="resuelto"
+                        )
+
+                        # Actualizar cola y historial
+                        self.cola_incidentes.remove(incidente_obtenido)
+                        self.historial.append(incidente_resuelto)
                         guardar_historial_json(self.historial)
                         guardar_incidente_json(self.cola_incidentes)
-                        salir = True
+                        print("✅ Incidente resuelto correctamente")
                     else:
-                        print("Este operador no tiene permiso para ese incidentes")
+                        print("❌ Este operador no tiene permiso para ese incidente")
                 else:
-                    print("Operador no disponible")
+                    print("❌ Operador no disponible")
             else:
-                print("Opción fuera de rango. Regresando al menú.")
-                salir = True
+                print("Opción fuera de rango")
+        except ValueError:
+            print("❌ Por favor ingrese un número válido")
 
     def asignar_incidente_a_operador(self):
         lista_filtrada = filtrar_estado_pendiente_activo(self.cola_incidentes)
@@ -110,7 +123,20 @@ class GestorDeIncidentes:
                 if operador in set_operadores_disponibles():
                     roles = roles_permitidos()
                     if operador in roles.get(incidente_seleccionado.tipo, []):
-                        incidente_seleccionado.asignado = operador
+                        # Crear un nuevo incidente con el operador asignado
+                        nuevo_incidente = Incidentes(
+                            id=incidente_seleccionado.id,
+                            tipo=incidente_seleccionado.tipo,
+                            prioridad=incidente_seleccionado.prioridad,
+                            descripcion=incidente_seleccionado.descripcion,
+                            fecha_creacion=incidente_seleccionado.fecha_creacion,
+                            asignado=operador,
+                            estado=incidente_seleccionado.estado
+                        )
+                        # Reemplazar el incidente en la cola
+                        self.cola_incidentes.remove(incidente_seleccionado)
+                        self.cola_incidentes.append(nuevo_incidente)
+                        guardar_incidente_json(self.cola_incidentes)
                         print("✅ Incidente asignado correctamente.")
                     else:
                         print("❌ Este operador no tiene permisos para este tipo de incidente.")
