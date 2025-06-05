@@ -5,7 +5,7 @@ from incident.models import Incidentes
 from typing import List
 
 
-def guardar_incidente_json(cola_incidentes: deque, archivo="incidentes.json"):
+def guardar_incidente_json(cola_incidentes: deque, archivo="persistence/incidentes.json"):
     datos = []
     for inc in cola_incidentes:
         datos.append({
@@ -21,7 +21,7 @@ def guardar_incidente_json(cola_incidentes: deque, archivo="incidentes.json"):
         json.dump(datos, f, indent=4)
 
 
-def cargar_incidente_json(archivo="incidentes.json") -> deque:
+def cargar_incidente_json(archivo="persistence/incidentes.json") -> deque:
     try:
         with open(archivo, "r", encoding="utf-8") as f:
             datos = json.load(f)
@@ -42,7 +42,7 @@ def cargar_incidente_json(archivo="incidentes.json") -> deque:
         return deque()
 
 
-def guardar_historial_json(historial: List[Incidentes], archivo="historial.json"):
+def guardar_historial_json(historial: List[Incidentes], archivo="persistence/historial.json"):
     datos = []
     for inc in historial:
         datos.append({
@@ -58,7 +58,7 @@ def guardar_historial_json(historial: List[Incidentes], archivo="historial.json"
         json.dump(datos, f, indent=4)
 
 
-def cargar_historial_json(archivo="historial.json") -> List[Incidentes]:
+def cargar_historial_json(archivo="persistence/historial.json") -> List[Incidentes]:
     try:
         with open(archivo, "r", encoding="utf-8") as f:
             datos = json.load(f)
